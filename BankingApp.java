@@ -1,3 +1,4 @@
+
 import java.util.Scanner;
 
 public class BankingApp {
@@ -20,10 +21,10 @@ public class BankingApp {
         final String SUCCESS_MSG = String.format("\t%s%s%s\n", COLOR_GREEN_BOLD, "%s", RESET);
 
         String screen = DASHBOARD;
-        
-        String[] customerNames = new String[0];
-        String[] account_id = new String[0];
-        double[] Balance = new double[0];
+        String[][] customers = new String[0][];
+        // String[] customerNames = new String[0];
+        // int[] account_id = new int[0];
+        // double[] Balance = new double[0];
 
         do {
             final String APP_TITLE = String.format("%s%s%s",
@@ -67,40 +68,17 @@ public class BankingApp {
                     break;
 
                 case OPEN_ACCOUNT:
-                    String id;
+                    int id;
                     String name;
                     boolean valid;
                     double intialDeposit;
 
-                    // ID Validation
-                    do {
-                        valid = true;
-                        System.out.print("\tEnter New Bank Account : "); // C-ac
-                        id = SCANNER.nextLine().toUpperCase().strip();
-                        if (id.isBlank()) {
-                            System.out.printf(ERROR_MSG, "Account number can't be empty");
-                            valid = false;
-                        } else if (!id.startsWith("SDB-") || id.length() < 9) {
-                            System.out.printf(ERROR_MSG, "Invalid account number format");
-                            valid = false;
-                        } else {
-                            String number = id.substring(4);
-                            for (int i = 0; i < number.length(); i++) {
-                                if (!Character.isDigit(number.charAt(i))) {
-                                    System.out.printf(ERROR_MSG, "Invalid account number format");
-                                    valid = false;
-                                    break;
-                                }
-                            }
-                            for (int i = 0; i < account_id.length; i++) {
-                                if (account_id[i].equals(id)) {
-                                    System.out.printf(ERROR_MSG, "Account Number already exists");
-                                    valid = false;
-                                    break;
-                                }
-                            }
-                        }
-                    } while (!valid);
+                    String[][] newCustomers = new String[customers.length + 1][3];
+
+                    id = newCustomers.length;
+                    System.out.printf("\t%s : SDB-%05ds \n", "Account Number", id);
+
+                    // Name Validation
                     do {
                         valid = true;
                         System.out.print("\tEnter Customer Name: ");
@@ -119,6 +97,7 @@ public class BankingApp {
                             }
                         }
                     } while (!valid);
+
                     do {
                         valid = true;
                         System.out.print("\tIntial Deposit : ");
@@ -131,24 +110,23 @@ public class BankingApp {
                         }
                     } while (!valid);
 
-                    String[] newAccountIds = new String[account_id.length + 1];
-                    String[] newCustomerNames = new String[customerNames.length + 1];
-                    double[] newBalance=new double[account_id.length+1];
-                    for (int i = 0; i < account_id.length; i++) {
-                        newAccountIds[i] = account_id[i];
-                        newCustomerNames[i] = customerNames[i];
-                        newBalance[i]=Balance[i];
+                    // String[] newCustomerNames = new String[customerNames.length + 1];
+
+                    for (int i = 0; i < customers.length; i++) {
+                        newCustomers[i][0] = customers[i][0];
+                        newCustomers[i][1] = customers[i][1];
+                        newCustomers[i][2] = customers[i][2];
                     }
-                    newAccountIds[newAccountIds.length - 1] = id;
-                    newCustomerNames[newAccountIds.length - 1] = name;
-                    newBalance[newBalance.length-1]=intialDeposit;
-                    account_id = newAccountIds;
-                    customerNames = newCustomerNames;
-                    Balance=newBalance;
+
+                    newCustomers[newCustomers.length - 1][0] = Integer.toString(id);
+                    newCustomers[newCustomers.length - 1][1] = name;
+                    newCustomers[newCustomers.length - 1][2] = Double.toString(intialDeposit);
+
+                    customers = newCustomers;
 
                     System.out.println();
                     System.out.printf(SUCCESS_MSG,
-                            String.format("Bank Account ID %s:%s has created successfully", id, name));
+                            String.format("Bank Account ID SDB-%05d:%s has created successfully\n", (id), name));
                     System.out.print("\tDo you want to continue adding (Y/n)? ");
                     if (SCANNER.nextLine().strip().toUpperCase().equals("Y"))
                         continue;
